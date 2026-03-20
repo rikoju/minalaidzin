@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Minal Aidzin Wal Faidzin - Untuk Pacar Tersayang</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- GSAP & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <!-- Three.js untuk asset 3d (background ringan efek) -->
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+      }
+    }
+  </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #fbf8ed 0%, #f3efdf 100%);
+            font-family: 'Inter', sans-serif;
+            color: #2c3e2f;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Warna tema: Hijau sage, cream, putih */
+        :root {
+            --cream: #fff9ef;
+            --green-primary: #2b5e3b;
+            --green-soft: #5a7c5a;
+            --white: #ffffff;
+            --gold-light: #e9d6a7;
+            --shadow-sm: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Container utama */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Hero / header */
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem 4rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            color: var(--green-primary);
+            letter-spacing: -0.5px;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.03);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #4a5b4a;
+            margin-top: 0.75rem;
+            font-weight: 400;
+        }
+
+        .ketupat-icon {
+            font-size: 3rem;
+            margin: 1rem 0;
+            color: #c7a55b;
+        }
+
+        /* --- Slider / Perpage konten --- */
+        .slider-section {
+            margin: 4rem 0;
+            position: relative;
+        }
+
+        .slider-wrapper {
+            background: rgba(255, 250, 240, 0.7);
+            backdrop-filter: blur(3px);
+            border-radius: 56px;
+            padding: 2rem 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(100, 120, 80, 0.2);
+        }
+
+        .page-container {
+            min-height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        /* Card konten (setiap halaman) - sekarang menyesuaikan ukuran foto */
+        .content-card {
+            background: var(--white);
+            border-radius: 48px;
+            padding: 2rem 2rem;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s;
+            border: 1px solid #e9dfc7;
+        }
+
+        .content-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 30px 40px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Photo frame - sekarang menyesuaikan dengan ukuran asli foto, tapi tetap rapi */
+        .photo-frame {
+            width: 100%;
+            border-radius: 32px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            background: #e9e0cf;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            /* Tidak ada aspect-ratio tetap, menyesuaikan tinggi berdasarkan gambar */
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+            max-height: 70vh;
+            /* Batas maksimal agar tidak terlalu tinggi di desktop */
+        }
+
+        .photo-frame:hover img {
+            transform: scale(1.02);
+        }
+
+        /* Untuk foto landscape yang lebar, tetap proporsional */
+        @media (min-width: 768px) {
+            .photo-frame img {
+                max-height: 65vh;
+            }
+        }
+
+        /* Untuk foto portrait yang tinggi, tetap cantik */
+        @media (max-width: 767px) {
+            .photo-frame img {
+                max-height: 55vh;
+            }
+        }
+
+        .quote-text {
+            font-size: 1.55rem;
+            line-height: 1.4;
+            font-family: 'Playfair Display', serif;
+            font-weight: 500;
+            color: #2c4b32;
+            text-align: center;
+            margin: 1.5rem 0 0.8rem;
+        }
+
+        .quote-author {
+            text-align: center;
+            font-size: 1rem;
+            color: #8f9b7a;
+            letter-spacing: 1px;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        .btn-navigate {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2.5rem;
+        }
+
+        .nav-btn {
+            background: var(--green-primary);
+            border: none;
+            padding: 12px 28px;
+            border-radius: 60px;
+            font-weight: 600;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 5px 12px rgba(43, 94, 59, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn i {
+            font-size: 1.1rem;
+        }
+
+        .nav-btn:hover {
+            background: #1f4630;
+            transform: scale(1.03);
+        }
+
+        .nav-btn:disabled {
+            background: #b5c2ad;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .page-indicator {
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: 500;
+            color: #557c55;
+            font-size: 1rem;
+        }
+
+        /* Jarak antar konten lebih lebar (spacing antar section dan dalam slider) */
+        .spacer-xl {
+            margin: 5rem 0;
+        }
+
+        /* Dekorasi 3D (canvas) */
+        #canvas-3d {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        /* elemen ornamen tradisional */
+        .ornament {
+            position: absolute;
+            z-index: 1;
+            font-size: 2.8rem;
+            opacity: 0.2;
+            pointer-events: none;
+        }
+
+        /* Layout content spacing lebih lebar */
+        .extra-margin {
+            margin-bottom: 3rem;
+        }
+
+        /* responsive */
+        @media (max-width: 680px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .quote-text {
+                font-size: 1.25rem;
+            }
+
+            .content-card {
+                padding: 1.5rem;
+            }
+
+            .btn-navigate {
+                gap: 1rem;
+            }
+
+            .nav-btn {
+                padding: 10px 20px;
+            }
+
+            .slider-wrapper {
+                padding: 1.2rem;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6a6f5e;
+            border-top: 1px solid #e2d9c6;
+            margin-top: 2rem;
+            font-size: 0.85rem;
+        }
+
+        /* efek scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Loading state untuk gambar */
+        .photo-frame.loading {
+            position: relative;
+            min-height: 200px;
+            background: linear-gradient(110deg, #ece3d4 8%, #f5efdf 18%, #ece3d4 33%);
+            background-size: 200% 100%;
+            animation: shimmer 1.2s linear infinite;
+        }
+
+        @keyframes shimmer {
+            to {
+                background-position: -200% 0;
+            }
+        }
+
+        /* Animasi fade untuk konten */
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-card {
+            animation: fadeSlideUp 0.5s ease forwards;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Canvas 3D background (aset 3d ringan) -->
+    <canvas id="canvas-3d"></canvas>
+
+    <!-- Ornamen ketupat & bulan dekoratif -->
+    <div class="ornament" style="top: 10%; left: 3%;"><i class="fas fa-star-and-crescent"></i></div>
+    <div class="ornament" style="bottom: 15%; right: 4%;"><i class="fas fa-mosque"></i></div>
+    <div class="ornament" style="top: 30%; right: 8%;"><i class="fas fa-kaaba"></i></div>
+    <div class="ornament" style="bottom: 30%; left: 5%;"><i class="fas fa-lantern"></i></div>
+
+    <div class="container" style="position: relative; z-index: 2;">
+        <!-- Hero Section -->
+        <div class="hero reveal">
+            <div class="ketupat-icon"><i class="fas fa-moon"></i> <i class="fas fa-star"></i></div>
+            <h1>Minal Aidzin Wal Faidzin</h1>
+            <p>✨ Untuk pacar tercinta, semoga hari kemenangan ini membawa kebahagiaan dan cinta yang semakin erat ✨</p>
+        </div>
+
+        <!-- Slider perpage : foto + kata-kata -->
+        <div class="slider-section reveal">
+            <div class="slider-wrapper">
+                <div id="dynamic-page" class="page-container">
+                    <!-- konten akan di inject via js -->
+                </div>
+                <div class="btn-navigate">
+                    <button id="prevBtn" class="nav-btn"><i class="fas fa-arrow-left"></i> Kembali</button>
+                    <button id="nextBtn" class="nav-btn">Selanjutnya <i class="fas fa-arrow-right"></i></button>
+                </div>
+                <div class="page-indicator" id="pageIndicator">Halaman 1 / 5</div>
+            </div>
+        </div>
+
+        <!-- informasi tambahan: jarak lebar sudah diatur via padding dan margin, plus deskripsi -->
+        <div class="extra-margin reveal"
+            style="text-align: center; background: #fff6e8; border-radius: 80px; padding: 1.8rem; margin-top: 1rem;">
+            <i class="fas fa-heart" style="color: #b56532;"></i>
+            <span style="font-weight: 500;">Setiap lembar adalah kenangan manis kita, terima kasih telah menjadi bagian
+                dari hari rayaku.</span>
+            <br>
+            <small style="display: inline-block; margin-top: 8px; color: #8f9b7a;"><i class="fas fa-camera"></i> Setiap
+                foto adalah cerita indah kita</small>
+        </div>
+    </div>
+
+    <footer>
+        <p>🌙 Selamat Idul Fitri 1446 H 🌙 <br> Mohon maaf lahir dan batin, semoga kita selalu dalam kasih sayang.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.75rem;"><i class="fas fa-heart"></i> Untukmu, selalu</p>
+    </footer>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        // ========== 1. Setup 3D Asset Background (dekorasi ringan) ==========
+        const canvas = document.getElementById('canvas-3d');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        // objek 3d: bulan sabit sederhana + bintang
+        const group = new THREE.Group();
+
+        // Bulan sabit
+        const moonGeo = new THREE.SphereGeometry(0.8, 32, 32);
+        const moonMat = new THREE.MeshStandardMaterial({ color: 0xfff5c2, emissive: 0xccaa55, emissiveIntensity: 0.3 });
+        const moonCore = new THREE.Mesh(moonGeo, moonMat);
+        group.add(moonCore);
+
+        const crescentGeo = new THREE.SphereGeometry(0.75, 32, 32);
+        const crescentMat = new THREE.MeshStandardMaterial({ color: 0xf0e2b6 });
+        const cover = new THREE.Mesh(crescentGeo, crescentMat);
+        cover.position.set(0.35, 0.1, 0.2);
+        group.add(cover);
+
+        // Bintang-bintang kecil
+        const starMat = new THREE.MeshStandardMaterial({ color: 0xffdd99, emissive: 0xdcb572 });
+        for (let i = 0; i < 60; i++) {
+            const starGeo = new THREE.DodecahedronGeometry(0.05);
+            const star = new THREE.Mesh(starGeo, starMat);
+            star.position.set((Math.random() - 0.5) * 12, (Math.random() - 0.5) * 8, (Math.random() - 0.5) * 10 - 5);
+            star.scale.setScalar(0.5 + Math.random() * 0.7);
+            group.add(star);
+        }
+
+        // ketupat abstrak (seperti bentuk diamond)
+        const diamondGeo = new THREE.ConeGeometry(0.2, 0.4, 4);
+        const diamondMat = new THREE.MeshStandardMaterial({ color: 0x8fbc6e });
+        for (let i = 0; i < 25; i++) {
+            const diamond = new THREE.Mesh(diamondGeo, diamondMat);
+            diamond.position.set((Math.random() - 0.5) * 14, (Math.random() - 0.5) * 7 - 2, (Math.random() - 0.5) * 12 - 6);
+            diamond.rotation.y = Math.random() * Math.PI;
+            group.add(diamond);
+        }
+
+        scene.add(group);
+
+        // lighting
+        const ambientLight = new THREE.AmbientLight(0x404060);
+        scene.add(ambientLight);
+        const dirLight = new THREE.DirectionalLight(0xfff5d1, 1);
+        dirLight.position.set(2, 5, 3);
+        scene.add(dirLight);
+        const backLight = new THREE.PointLight(0xc9b27c, 0.5);
+        backLight.position.set(-1, 2, -3);
+        scene.add(backLight);
+
+        camera.position.z = 5;
+        camera.position.y = 0.5;
+
+        function animate3D() {
+            requestAnimationFrame(animate3D);
+            group.rotation.y += 0.002;
+            group.rotation.x = Math.sin(Date.now() * 0.0005) * 0.1;
+            renderer.render(scene, camera);
+        }
+        animate3D();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // ========== 2. Data konten per halaman (foto lokal + kata2) ==========
+        // Ganti dengan nama file foto Anda yang sudah ada di folder project
+        const pagesData = [
+            {
+                imgSrc: "2025_12_31_16_04_46_IMG_7576.JPG",
+                altText: "Foto kenangan indah kita 1 - Momen spesial",
+                kata: "“Taqabbalallahu minna wa minkum, semoga Allah menerima amal ibadah kita. Selamat hari raya cantikkk🥰🥰 minal aidzin wal faidzin sayanggg🥰🥰”",
+                caption: "Momen terindah bersamamu"
+            },
+            {
+                imgSrc: "2026_01_10_11_41_09_IMG_7741.JPG",
+                altText: "Foto mesra kita 2 - Kebahagiaan",
+                kata: "“Aa banyak salah ke neng selama setahun ini🙏😭 Aa sering bikin kesel jengkel mengkel badmood🙏😭 Jadi aa minta maaf bangettt buat semua kesalahan aa yahhh sayanggg🥰🥰”",
+                caption: "Cinta yang tumbuh bersamamu"
+            },
+            {
+                imgSrc: "2026_01_10_11_52_58_IMG_7754.JPG",
+                altText: "Tersenyum bersama 3 - Tawa bahagia",
+                kata: "“Takbir bergema di hati, rindu terbalut dalam peluk. Selamat Idul Fitri, sayang. Aa minta maaf bangettt ya sayanggg selama setahun ini🙏🥰 Minta maaf juga buat kemaren cantikkk🙏😭”",
+                caption: "Senyummu adalah pelita hatiku"
+            },
+            {
+                imgSrc: "IMG_20251222_133604_731.jpg",
+                altText: "Kebahagiaan kita 4 - Cerita cinta",
+                kata: "“Makasihhh bangettt neng udah mau bertahan sejauh ini sama aa sayanggg🥰🥰 makasihh bangettt udah mau sama aa terus😍😍 makasihhh buat neng yang udah mau sabar sama aa😍😍 Apresiasi bangettt buat neng bisa sejauh ini sama aa🥳🥳”",
+                caption: "Bersama menapaki hari yang fitri"
+            },
+            {
+                imgSrc: "IMG-20250727-WA0001.jpg",
+                altText: "Cinta abadi 5 - Janji suci",
+                kata: "Aa sayanggg bangettt sama neng😍😍😘😘 Aa bersyukur bangettt bangettt bangettt punya neng🥰🥰”",
+                caption: "Selamanya dalam ikatan cinta"
+            }
+        ];
+
+        // ========== 3. State slider dan rendering dinamis ==========
+        let currentIndex = 0;
+        const totalPages = pagesData.length;
+
+        const dynamicPageDiv = document.getElementById('dynamic-page');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const pageIndicator = document.getElementById('pageIndicator');
+
+        // Fungsi untuk memuat gambar dengan loading state
+        function loadImageWithLoading(imgElement, src) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    imgElement.src = src;
+                    imgElement.style.opacity = '0';
+                    setTimeout(() => {
+                        imgElement.style.opacity = '1';
+                    }, 50);
+                    resolve();
+                };
+                img.onerror = () => {
+                    // Jika gambar gagal dimuat, gunakan placeholder
+                    imgElement.src = 'https://placehold.co/800x600/ede7d9/5a7c5a?text=✨+Foto+Kenangan+✨';
+                    resolve();
+                };
+                img.src = src;
+            });
+        }
+
+        async function renderPage(index) {
+            const data = pagesData[index];
+
+            // Tampilkan loading state
+            dynamicPageDiv.innerHTML = `
+      <div class="content-card" style="min-height: 400px; display: flex; align-items: center; justify-content: center;">
+        <div style="text-align: center;">
+          <i class="fas fa-spinner fa-pulse fa-2x" style="color: var(--green-primary);"></i>
+          <p style="margin-top: 1rem; color: #5a7c5a;">Memuat kenangan indah...</p>
+        </div>
+      </div>
+    `;
+
+            // Buat elemen baru dengan struktur yang sudah ditentukan
+            const html = `
+      <div class="content-card">
+        <div class="photo-frame" id="photo-frame-${index}">
+          <img id="main-img-${index}" alt="${data.altText}" style="width:100%; height:auto; opacity:0; transition: opacity 0.4s ease;">
+        </div>
+        <div class="quote-text">${data.kata}</div>
+        <div class="quote-author">— Untukmu, pacar tercinta —</div>
+        <div style="margin-top: 1rem; text-align:center; font-size: 0.9rem; color:#9baa84;">
+          <i class="fas fa-heart"></i> ${data.caption || 'Syawal penuh cinta'} <i class="fas fa-heart"></i>
+        </div>
+      </div>
+    `;
+
+            dynamicPageDiv.innerHTML = html;
+
+            // Load gambar setelah DOM terupdate
+            const imgElement = document.getElementById(`main-img-${index}`);
+            if (imgElement) {
+                await loadImageWithLoading(imgElement, data.imgSrc);
+                // Setelah gambar dimuat, photo-frame akan otomatis menyesuaikan tinggi
+                const photoFrame = document.getElementById(`photo-frame-${index}`);
+                if (photoFrame) {
+                    photoFrame.classList.remove('loading');
+                }
+            }
+
+            pageIndicator.innerText = `Halaman ${index + 1} / ${totalPages}`;
+
+            // aktif/nonaktif tombol
+            prevBtn.disabled = (index === 0);
+            nextBtn.disabled = (index === totalPages - 1);
+
+            // animasi muncul halus dengan GSAP
+            const card = document.querySelector('.content-card');
+            if (card) {
+                gsap.fromTo(card,
+                    { opacity: 0, y: 25, scale: 0.98 },
+                    { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "backOut(0.3)" }
+                );
+            }
+        }
+
+        function nextPage() {
+            if (currentIndex < totalPages - 1) {
+                currentIndex++;
+                renderPage(currentIndex);
+            }
+        }
+
+        function prevPage() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderPage(currentIndex);
+            }
+        }
+
+        prevBtn.addEventListener('click', prevPage);
+        nextBtn.addEventListener('click', nextPage);
+
+        // Inisialisasi halaman pertama
+        renderPage(0);
+
+        // ========== 4. Animasi Scroll + GSAP Reveal ==========
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Reveal items dengan class .reveal
+        const revealElements = document.querySelectorAll('.reveal');
+        revealElements.forEach(el => {
+            gsap.fromTo(el,
+                { opacity: 0, y: 40 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.9,
+                    scrollTrigger: {
+                        trigger: el,
+                        start: "top 85%",
+                        toggleActions: "play none none reverse",
+                        once: false
+                    }
+                }
+            );
+        });
+
+        // Animasi tambahan untuk slider section dan card saat scroll masuk
+        ScrollTrigger.create({
+            trigger: ".slider-section",
+            start: "top 75%",
+            onEnter: () => {
+                gsap.fromTo(".slider-wrapper",
+                    { scale: 0.97, opacity: 0.8, y: 15 },
+                    { scale: 1, opacity: 1, y: 0, duration: 0.7, ease: "backOut(0.4)" }
+                );
+            }
+        });
+
+        // Animasi floating pada ornament
+        let time = 0;
+        function animateOrnament() {
+            requestAnimationFrame(animateOrnament);
+            time += 0.008;
+            const ornaments = document.querySelectorAll('.ornament');
+            ornaments.forEach((orn, idx) => {
+                const offset = idx * 0.5;
+                orn.style.transform = `translateY(${Math.sin(time + offset) * 8}px) rotate(${Math.sin(time * 0.5) * 4}deg)`;
+            });
+        }
+        animateOrnament();
+
+        // Tambahan efek hover tombol dengan GSAP
+        const btns = document.querySelectorAll('.nav-btn');
+        btns.forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                gsap.to(btn, { scale: 1.05, duration: 0.2, y: -2, ease: "power1.out" });
+            });
+            btn.addEventListener('mouseleave', () => {
+                gsap.to(btn, { scale: 1, duration: 0.2, y: 0, ease: "power1.out" });
+            });
+        });
+
+        // Untuk memastikan jarak perkonten lebih lebar
+        const styleExtra = document.createElement('style');
+        styleExtra.textContent = `
+    .slider-section {
+      margin: 5rem 0 !important;
+    }
+    .content-card {
+      margin: 0.5rem 0;
+    }
+    .photo-frame {
+      margin-bottom: 2.2rem !important;
+      background: #faf5e8;
+      border-radius: 32px;
+    }
+    .quote-text {
+      margin-top: 1.2rem;
+    }
+    .container {
+      gap: 3rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .hero, .slider-section, .extra-margin {
+      margin-bottom: 2rem;
+    }
+    /* Memastikan foto portrait tidak terpotong */
+    .photo-frame img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 28px;
+    }
+    /* Efek tambahan untuk card */
+    .content-card {
+      transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    }
+  `;
+        document.head.appendChild(styleExtra);
+
+        // Menambahkan efek keyboard navigation (panah kiri/kanan)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                prevPage();
+                e.preventDefault();
+            } else if (e.key === 'ArrowRight') {
+                nextPage();
+                e.preventDefault();
+            }
+        });
+
+        // Preload gambar berikutnya untuk pengalaman yang lebih halus
+        function preloadNextImage() {
+            if (currentIndex + 1 < totalPages) {
+                const nextImg = new Image();
+                nextImg.src = pagesData[currentIndex + 1].imgSrc;
+            }
+            if (currentIndex - 1 >= 0) {
+                const prevImg = new Image();
+                prevImg.src = pagesData[currentIndex - 1].imgSrc;
+            }
+        }
+
+        // Override renderPage untuk menambahkan preload
+        const originalRender = renderPage;
+        window.renderPage = function (index) {
+            originalRender(index);
+            setTimeout(() => preloadNextImage(), 100);
+        };
+
+        renderPage = function (index) {
+            originalRender(index);
+            setTimeout(() => preloadNextImage(), 100);
+        }.bind(this);
+
+        // Re-bind
+        window.renderPage = renderPage;
+        renderPage(currentIndex);
+
+        console.log("✨ Landing page siap! Foto akan menyesuaikan ukuran aslinya. Pastikan file foto dengan nama yang sesuai ada di folder project. ✨");
+    </script>
+</body>
+
+</html>
